@@ -7,7 +7,6 @@ import 'package:cunning_document_scanner/cunning_document_scanner.dart';
 
 class ScanPage extends StatefulWidget {
   const ScanPage({super.key});
-
   @override
   State<ScanPage> createState() => _ScanPageState();
 }
