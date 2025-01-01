@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:id2/ScanPage.dart';
+import 'package:id2/OtpPage.dart';
 import 'package:id2/signup.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -44,11 +44,26 @@ class _LoginPageState extends State<LoginPage> {
 // Vérifier que le token est bien stocké
           print("Token stocké: $token");
 
-          // Naviguer vers la page ScanPage après la connexion réussie
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => ScanPage()),
+          // Envoyer l'OTP
+          final otpResponse = await http.post(
+            Uri.parse('http://192.168.1.2:8080/api/v1/auth/send-otp'),
+          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body:({'email': _emailController.text}),
           );
+
+          if (otpResponse.statusCode == 200) {
+            // Naviguer vers la page OTP
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => OtpPage(email: _emailController.text),
+              ),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Erreur lors de l\'envoi de l\'OTP.')),
+            );
+          }
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Email ou mot de passe invalide.')),
